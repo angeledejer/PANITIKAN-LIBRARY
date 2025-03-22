@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANITIKAN Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('background.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 252, 252, 0.1); 
+            z-index: -1;
+            backdrop-filter: blur(1px);
+        }
+        .title-container {
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 60px;
+            display: inline-block;
+            background: linear-gradient(to right, #fcdca8, #d5ab7d);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            padding: 20px;
+        }
+
+        .bookshelf {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .book {
+            width: 120px;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-size: 12px;
+            background-color: #000;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+        .book:hover {
+            transform: scale(1.1);
+        }
+        .book:active {
+            transform: translateY(-10px);
+        }
+        .lesson-content {
+            display: none;
+            padding: 10px;
+            background: rgba(255, 246, 246, 0.6);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            margin: 10px auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+
+        .book-box {
+            width: 100%;
+            background: #f9f9f9;
+            justify-content: space-between;
+            padding: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 10px solid #8b6b48;
+            text-align: center;
+        }
+
+        .book-box img {
+            width: 70%;
+            height: auto;
+        }
+
+        .book-box video {
+            width: 38%;
+            max-width: 38%;
+            margin-top: 10px;
+        }
+        .back-button {
+    margin-top: 10px;
+    cursor: pointer;
+    color: rgb(100, 100, 216);
+    position: relative;
+    z-index: 0; /* Siguraduhin na mas mababa ito kaysa sa ibang elements */
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+   
+
+</style>
+</head>
+<body>
+        <div class="background-overlay"></div>
+    <div class="title-container">
+        <h1>Panitikan Library</h1>
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    </div>
+
+    <div class="bookshelf" id="bookshelf"></div>
+    <div class="lesson-content" id="lessonContent">
+        <h2 id="lessonTitle"></h2>
+        <img id="lessonImage" src="" alt="">
+
+        <video id="lessonVideo" controls style="width: 100%; display: none;">
+            <source id="videoSource" src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <p id="lessonText"></p>
+        <p class="reference" id="lessonReference"></p>
+        
+        <div class="back-button" onclick="closeLesson()">⟵ Bumalik sa Bookshelf
+    <script>
+        const lessons = [
+            { title: 'Kwentong Bayan', text: 'Ang kwentong bayan ay bahagi ng isang kalinangan na binabahagi ng isang partikular na pangkat ng mga tao. Kadalasan, ito ay naglalaman ng aral at nagpapakita ng kultura ng isang lipunan.', image: 'kwentong_bayan.jpg', cover: 'cover_kwentong_bayan.jpg', video: 'kwentong bayan.mp4' },
+            { title: 'Tula', text: 'Ang mga likhang panulaan ay tinatawag na tula. Madaling makilala ang isang tula sapagkat karaniwan itong may batayan o huwaran sa pagbigkas ng mga huling salita. Binubuo ang tula ng saknong at taludtod. Karaniwan itong wawaluhin, lalabindalawahin, lalabing-animin, at lalabing-waluhing pantig. Matalinghaga at ginagamitan din ng tayutay. May tugma at sukat. Kung minsan ay maiksi o kaya naman ay mahaba..', image: 'tula.jpg', cover: 'cover_tula.jpg', video: 'tula.mp4' },
+            { title: 'Nobela', text: 'isang maiksing salaysay hinggil sa isang mahalagang pangyayaring kinasasangkutan ng isa o ilang tauhan at may iisang kakintalan o impresyon lamang. Isa itong masining na anyo ng panitikan.', image: 'nobela.jpg', cover: 'cover_nobela.jpg', video: 'nobela.mp4'},
+            { title: 'Alamat', text: 'Ang alamat ay isang uri ng kuwentong bayan at panitikan na nagsasalaysay ng mga pinagmulan ng mga bagay-bagay sa daigdig. ', image: 'alamat.jpg', cover: 'cover_alamat.jpg', video: 'alamat_video.mp4' },
+            { title: 'Bugtong', text: 'Ang bugtong, pahulaan, o patuturan ay isang pangungusap o tanong na may doble o nakatagong kahulugan na nilulutas bilang isang palaisipan (tinatawag ding palaisipan ang bugtong).', image: 'bugtong.jpg', cover: 'cover_bugtong.jpg', video: 'bugtong.mp4' },
+            {title: 'Epiko', image: 'epiko.jpg', text: 'Sa tradisyunal na kahulugan, ang isang epiko ay isang uri ng panulaan, na kilala rin bilang panulaang epiko.Bagaman, sa makabagong katawagan, kadalasang napapalawig ito sa ibang anyo ng sining, tulad ng sa teatrong epiko, mga pelikula, musika, nobela, palabas sa telebisyon at kahit sa mga larong bidyo, kung saan may mga tema ang kuwento ng kadakilaan ng kabayanihan, katulad sa panulaang epiko.',
+        cover: 'cover_epiko.jpg', },
+    { title: 'Sawikain', image: 'sawikain.jpg', text: 'Ang isang sawikain o idyoma ay isang pagpapahayag na ang kahulugan ay hindi komposisyunal — sa ibang salita, hindi binubuo ng tumpak na kahulugan ang mga kanya-kanyang salita na nabuo. Ito ay di-tuwirang pagbibigay kahulugan at pagpapakita ng kaisipan at kaugalian ng isang lugar.', image: 'sawikain.jpg', cover: 'cover_sawikain.jpg', video: 'sawikain.mp4'},
+    { title: 'Salawikain', image: 'salawikain.jpg', text: 'Ang mga salawikain, kawikaan, kasabihan, wikain, o sawikain ay mga maiiksing pangungusap na lubhang makahulugan at naglalayong magbigay patnubay sa ating pang-araw-araw na pamumuhay.', cover: 'cover_salawikain.jpg', video: 'salawikain.mp4' },
+    { title: 'Balagtasan', image: 'balagtasan.jpg', text: 'Ang balagtasan ay isang uri ng patimpalak o paligsahan ng talino sa pagtula na kung saan ay isa sa mga tanyag at kinikilalang tradisyunal na anyo ng panitikang Filipino.', cover: 'cover_balagtasan.jpg', video: 'balagtasan.mp4'},
+    { title: 'Baybayin', image: 'baybayin.jpg', text: 'Ang baybáyin ang sinaunang alpabeto ng mga Filipino bago pa dumating ang mga Español at maituro ang alpabetong Romano. Mula ito sa salitâng “baybáy” ng mga Tagalog na nangangahulugan ng lupaing nása gilid ng dagat at ng “pagbaybáy” na nangangahulugan ng ispeling.', cover: 'cover_baybayin.jpg', video: 'baybayin.mp4' },
+            {
+                title: 'PANITIKAN SA PANAHON NG PRE KOLONYAL', image: 'pre.jpg', text: 'Ang panitikan sa panahong ito ay pasalita at nagpasalin-salin sa pamamagitan ng mga alamat at iba pa. Ang wika ng panitikan ay ibat ibang katutubong wika ng Pilipinas.Ang panitikan sa panahong ito ay nagpapakita ng mayamang kultura ng mga katutubo bago pa man dumating ang mga dayuhang mananakop. Dito masasalamin ang kaugalian, paniniwala, at pananampalataya ng mga sinaunang Pilipino. Ang kanilang panitikan ay naging daluyan ng kaalaman, aliw, at pagpapahalaga sa kanilang tradisyonal na pamumuhay.',
+                cover: 'cover_pre.jpg', video: 'pre.mp4'
+            },
+            {
+                title: 'PANITIKAN SA PANAHON NG ESPANYOL', image: 'espanyol.jpg', text: 'Sa pagdating ng mga Espanyol, ang panitikan ay nagkaroon ng malaking pagbabago. Ito ay ginamit upang ipalaganap ang relihiyon, lalo na ang Kristiyanismo, at upang ipakita ang kolonyal na kapangyarihan. Nagkaroon ng diin sa pananampalataya, pagsunod sa simbahan, at pagpapasakop sa mga kolonyal na awtoridad. Dumating ang impluwensiya ng relihiyong Kristiyanismo, at dito sinimulan ang pagsulat ng panitikan gamit ang alpabetong Romano. Pinakapopular ang mga dasal, awit, korido, at komedya',
+                cover: 'espanyol.jpg', video: 'espannyol.mp4'
+            },
+            {
+                title: 'PANITIKAN SA PANAHON NG REBOLUSYONARYONG PILIPINO', image: 'rebo.jpg', text: 'Sa panahong ito, nagising ang damdaming makabayan ng mga Pilipino dahil sa pagsasamantala ng mga Kastila. Sumiklab ang rebolusyon upang labanan ang kolonyal na pamamahala. Ang panitikan ay naging sandata upang pukawin ang damdamin ng bayan.',
+                cover: 'cover_rebo.jpg', video: 'rebo.mp4'
+            },
+            {
+                title: 'PANITIKAN SA PANAHON NG AMERIKANO', image: 'ame.jpg', text: 'Ang panitikan sa ilalim ng mga Amerikano ay nagbigay-diin sa edukasyon at modernisasyon. Sa panahong ito, lumaganap ang paggamit ng wikang Ingles at ang pagpapakilala ng demokrasya. Ang mga akda ay nag-ugat sa mga tema ng kalayaan, pagkakapantay-pantay, at pag-unlad.',
+                cover: 'cover_ame.jpg', video: 'ame.mp4'
+            },
+            {
+                title: 'PANITIKAN SA PANAHON NG HAPON', image: 'h.jpg', text: 'Sa panahon ng pananakop ng mga Hapon, ang panitikan ay napilitang magbalik sa sariling wika at kultura. Pinagtibay nito ang pagpapahalaga sa pagiging makabayan at ang kahalagahan ng kalikasan at pagiging simple ng buhay. Lumabas ang damdaming mapanlikha at pagmamalasakit sa sariling bansa.',
+                cover: 'cover_h.jpg', video: 'h.mp4'
+            },
+            {
+                title: 'PANITIKAN SA  BAGONG LIPUNAN HANGGANG KASALUKUYAN', image: 'b.jpg', text: 'Ang panitikan sa kasalukuyan ay sumasalamin sa mas malaya at mas malawak na pagpapahayag. Ito ay nagsasama ng mga tradisyonal at makabagong anyo, mula sa nakasulat na akda hanggang sa digital na literatura. Ang mga tema ay nagiging mas personal, pandaigdigan, at progresibo, na naaayon sa makabagong pamumuhay ng mga Pilipino.',
+                cover: 'cover_b.jpg', video: 'b.mp4'
+            },
+            {
+            title: 'MGA SANGGUNIAN',
+           cover: 'cover_mgasanggunian.jpg',
+           reference:[ '<a href="https://www.youtube.com/watch?v=DDmqYfG7uls&t=36s&pp=ygUVa3dlbnRvbmcgYmF5YW4gbGVzc29u" target="_blank">KWENTONG BAYAN YOUTUBE LINK',
+           '<a href="https://tl.wikipedia.org/wiki/Kuwentong-bayan" target="_blank">Wikipedia: Kwentong Bayan</a>',
+                    '<a href="https://tl.wikipedia.org/wiki/Panulaan" target="_blank">Wikipedia: Tula</a>',
+                    '<a href="https://www.youtube.com/watch?v=Ngwcl0iZbiQ&pp=ygULdHVsYSBsZXNzb24%3D" target="_blank">TULA YOUTUBE LINK</a>',
+                    '<a href="https://tl.wikipedia.org/wiki/Nobela" target="_blank">Wikipedia: Nobela</a>',
+                    '<a href="https://www.youtube.com/watch?v=n-DioOae6qE" target="_blank">NOBELA YOUTUBE LINK</a>',
+                    '<a href="https://tl.wikipedia.org/wiki/Alamat" target="_blank">Wikipedia: Alamat</a>',
+                    '<a href="https://www.youtube.com/watch?v=WYVaLPIDcDw&pp=ygUNYWxhbWF0IGxlc3Nvbg%3D%3D" target="_blank">ALAMAT YOUTUBE LINK</a>',
+                    '<a href="https://tl.wikipedia.org/wiki/Bugtong" target="_blank">Wikipedia: Bugtong</a>',
+                    '<a href= "https://www.youtube.com/watch?v=ywp3lJ_TPUI&pp=ygUOYnVndG9uZyBsZXNzb24%3D" target="_blank">BUGTONG YOUTUBE LINK</a>',
+                    '<a href= "https://tl.wikipedia.org/wiki/Epiko"  target="_blank">Wikipedia: Epiko',
+                    '<a href= "https://www.youtube.com/watch?v=3Uuk8rYpIoY&pp=ygUMRVBJS08gbGVzc29u" target="_blank">EPIKO YOUTUBE LINK</a>',
+                    '<a href= "https://tl.wikipedia.org/wiki/Idiyoma" target="_blank">Wikipedia: Idiyoma',
+                    '<a href= "https://www.youtube.com/watch?v=MzjoRHWdCsM" target="_blank">SAWIKAIN YOUTUBE LINK</a>',
+                    '<a href= "https://tl.wikipedia.org/wiki/Salawikain" target=_blank">Wikipedia: Salawikain',
+                    '<a href= "https://www.youtube.com/watch?v=Z0i4SALrei4" target="_blank">SALAWIKAIN YOUTUBE LINK</a>',
+                    '<a href= "https://tl.wikipedia.org/wiki/Balagtasan" target="_blank">Wikipedia: Balagtasan',
+                    '<a href= "https://www.youtube.com/watch?v=LZs2qlYp5T8" target="_blank">BALAGTASAN YOUTUBE LINK</a>',
+                    '<a href= "https://tl.wikipedia.org/wiki/Baybayin" target="_blank">Wikipedia: Baybayin</a>',
+                    '<a href= "https://www.youtube.com/watch?v=KuT_qfMOKgY&list=PLfHY84t6Ygb0moqJRBmICvZpXFdk1ae7E"target="_blank">BAYBAYIN YOUTUBE LINK</a>',
+                    '<a href= "https://www.youtube.com/watch?v=8o1J8IcFeBs" target="_blank">PANITIKAN SA PRE KOLONYAL YOUTUBE LINK</a>',
+                    '<a href= "https://www.youtube.com/watch?v=QKM942lOIMg&pp=ygUncGFuaXRpa2FuIHNhIHBhbmFob24gbmcgZXNwYW55b2wgbGVzc29u" target="_blank">PANITIKAN SA PANAHON NG ESPANYOL YOUTUBE LINK</a>',
+                    '<a href= "https://www.youtube.com/watch?v=ppOdEbLPYWI" target="_blank">PANITIKAN SA PANAHON NG REBOLUSYONARYONG PILIPINO YOUTUBE LINK</a>',
+                    '<a href= "https://www.youtube.com/watch?v=T6fouiq52hc" target="_blank">PANITIKAN SA PANAHON NG AMERIKANO YOUTUBE LINK</a>',
+                    '<a href= "https://www.youtube.com/watch?v=rGuI182z45U&pp=ygUkcGFuaXRpa2FuIHNhIHBhbmFob24gbmcgSEFQT04gbGVzc29u" target="_blank">PANITIKAN SA PANAHON NG HAPON YOUTUBE LINK</a>',
+                    '<a href= "https://www.youtube.com/watch?v=lyI67HS7LI4&pp=ygVCcGFuaXRpa2FuIHNhIHBhbmFob24gbmcgQkFHT05HIExJUFVOQU4gSEFOR0dBTkcgS0FTQUxVS1VZQU4gbGVzc29u" target="_blank">PANITIKAN SA PANAHON NG BAGONG LIPUNAN HANGGANG KASALUKUYAN YOUTUBE LINK</a>',
+                ]
+            },
+        ];
+    
+
+        const bookshelf = document.getElementById('bookshelf');
+const lessonContent = document.getElementById('lessonContent');
+const lessonTitle = document.getElementById('lessonTitle');
+const lessonImage = document.getElementById('lessonImage');
+const lessonText = document.getElementById('lessonText');
+const lessonReference = document.getElementById('lessonReference');
+const lessonVideo = document.getElementById('lessonVideo');
+const videoSource = document.getElementById('videoSource');
+
+lessons.forEach((lesson, index) => {
+    const book = document.createElement('div');
+    book.className = 'book';
+    book.innerText = lesson.title;
+    book.style.backgroundImage = `url('${lesson.cover}')`;
+    book.style.backgroundSize = 'cover';
+    book.style.cursor = 'pointer';
+    book.onclick = () => viewLesson(index);
+    bookshelf.appendChild(book);
+});
+
+function viewLesson(index) {
+    const lesson = lessons[index];
+
+    lessonTitle.innerText = lesson.title;
+    lessonImage.src = lesson.image;
+    lessonText.innerText = lesson.text || '';
+
+    if (lesson.reference && lesson.reference.length > 0) {
+        lesson.reference.forEach(ref => {
+            lessonReference.innerHTML += `<li>${ref}</li>`;
+        });
+        lessonReference.innerHTML += "</ul>";
+    } else if (typeof lesson.references === 'string') {
+        lessonReference.innerHTML = `<h4>Mga Sanggunian:</h4><p>${lesson.reference}</p>`;
+    } else {
+        lessonReference.innerHTML = "";
+    }
+
+    if (lesson.video) {
+        videoSource.src = lesson.video;
+        lessonVideo.style.display = 'block';
+        lessonVideo.load();
+    } else {
+        lessonVideo.style.display = 'none';
+    }
+
+    bookshelf.style.display = 'none';
+    lessonContent.style.display = 'block';
+}
+
+function closeLesson() {
+    lessonContent.style.display = 'none';
+    bookshelf.style.display = 'flex';
+}
+
+</script>
+</body>
+</html>
